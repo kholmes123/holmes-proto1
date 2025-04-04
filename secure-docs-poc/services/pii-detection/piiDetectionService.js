@@ -34,10 +34,17 @@ app.post('/detect-pii-docx', upload.single('file'), async (req, res) => {
     const uploadedFile = req.file;
     const filePath = path.resolve(uploadedFile.path);
     const originalFilename = req.body.originalFilename || uploadedFile.originalname || 'unknown.docx'; 
-    const engineName = req.body.engine || 'regex';
+    const engineName = req.body.engine || 'regex';  // this tells us whether the engine is regex or nlp based on the info returned from the API call (which for example may be derived from a selection on an HTML form)
 
-    // 🔁 Dynamically load detector module
-    const detectorPath = `./utils/detectors/${engineName}Detector`;
+    // 🔁 Dynamically the appropriate load detector module based on the engine name
+    // note that the file naming convention for the javascript files containing the detector modules is that they are named as <engineName>Detector.js
+    // e.g. regexDetector.js or nlpDetector.js (because engine names are regex and nlp respectively)
+    // This is a simple way to load the correct module based on the engine name provided in the request
+    // If the engine name is not recognized, return an error
+    // and if the engine name is recognized, load the module dynamically
+    // and use it to detect PII in the uploaded file.  If setting the engine on an HTML form, then make sure the names passed to the script match the file names and the variables in this module
+
+    const detectorPath = `./utils/detectors/${engineName}Detector`;  // This line dynamically loads the detector based on the engine provided in the form submission:
     let detectPIIAndRedact;
     try {
       detectPIIAndRedact = require(detectorPath);

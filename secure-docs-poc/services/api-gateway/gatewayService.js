@@ -31,7 +31,7 @@ app.post('/process-docx', upload.single('file'), async (req, res) => {
     
 
     let detectionUrl;
-    if (engine === 'regex') {
+    if (engine === 'regex' || engine === 'regex2') {
       detectionUrl = 'http://localhost:3007/detect-pii-docx';
     } else if (engine === 'nlp') {
       detectionUrl = 'http://localhost:3009/detect-nlp-docx';

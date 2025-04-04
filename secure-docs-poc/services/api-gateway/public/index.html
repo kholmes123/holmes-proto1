@@ -8,14 +8,15 @@
   <h1>📄 Upload DOCX File for PII Redaction</h1>
 
   <!-- 🔽 User selects file, engine, and process mode -->
-  <form id="redactionForm" enctype="multipart/form-data" >
+  <form id="redactionForm" enctype="multipart/form-data" method="POST" action="#">
     <label for="file">Select DOCX File:</label>
     <input type="file" name="file" id="file" accept=".docx" required><br><br>
 
     <!-- Choose PII detection engine -->
     <label>PII Detection Engine:</label><br>
     <input type="radio" name="engine" value="regex" checked> Regex (default)<br>
-    <input type="radio" name="engine" value="nlp"> NLP (future feature)<br><br>
+    <input type="radio" name="engine" value="nlp"> NLP (future feature)<br>
+    <input type="radio" name="engine" value="regex2"> Regex (reusing placeholders)<br><br>
 
     <!-- Choose whether to apply watermark -->
     <label>Processing Type:</label><br>
@@ -32,11 +33,14 @@
       console.log("🧠 Script loaded and DOM ready");
   
       const form = document.getElementById('redactionForm');
+      // Debugging: Check if form is loaded
+      console.log("📋 Form element:", form);
+      
       const responseArea = document.getElementById('responseArea');
   
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        alert("🚀 Form submitted!");
+        console.log("🚀 Custom JS form handler triggered");
   
         const fileInput = document.getElementById('file');
         const file = fileInput.files[0];
