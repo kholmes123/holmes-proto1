@@ -9,7 +9,6 @@ const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const mammoth = require('mammoth');
 
-const detectPIIAndRedact = require('./utils/piiRegexEngine');
 const PiiMapping = require('./models/PiiMapping');
 const PiiLog = require('./models/PiiLog');
 const AuditLog = require('./models/AuditLog');
@@ -34,16 +33,26 @@ app.post('/detect-pii-docx', upload.single('file'), async (req, res) => {
   try {
     const uploadedFile = req.file;
     const filePath = path.resolve(uploadedFile.path);
-    const originalFilename = uploadedFile.originalname || 'unknown.docx';
+    const originalFilename = req.body.originalFilename || uploadedFile.originalname || 'unknown.docx'; 
+    const engineName = req.body.engine || 'regex';
+
+    // 🔁 Dynamically load detector module
+    const detectorPath = `./utils/detectors/${engineName}Detector`;
+    let detectPIIAndRedact;
+    try {
+      detectPIIAndRedact = require(detectorPath);
+    } catch (err) {
+      console.error(`❌ PII detector module not found: ${detectorPath}`);
+      return res.status(400).json({ error: `PII detection engine '${engineName}' is not supported.` });
+    }
 
     // Extract text from DOCX
     const fileBuffer = fs.readFileSync(filePath);
     const { value: extractedText } = await mammoth.extractRawText({ buffer: fileBuffer });
 
-    // Run PII detection
-    const { redactedText, matches : mappings, auditLog } = await detectPIIAndRedact(extractedText, originalFilename);
+    // Detect and redact PII
+    const { redactedText, matches, auditLog } = await detectPIIAndRedact(extractedText, originalFilename);
 
-    // Generate generic file name for redacted output
     const timestamp = Date.now();
     const genericFilename = `file-${timestamp}-${Math.random().toString(36).substring(2, 8)}.docx`;
 
@@ -51,25 +60,19 @@ app.post('/detect-pii-docx', upload.single('file'), async (req, res) => {
     await PiiMapping.create({
       originalFilename,
       genericFilename,
-      piiMappings: mappings,
+      piiMappings: matches,
     });
 
-    // DEBUG STEP: Save the shape/structure of audit log
-    console.log('📋 Audit log about to be saved:', JSON.stringify(auditLog, null, 2));
-
-    // Save audit log documents
     for (const entry of auditLog) {
       await AuditLog.create({
-        ...entry, // includes placeholder, matchedText, matchType, originalFilename
+        ...entry,
         timestamp: new Date()
       });
     }
 
-    // Clean up uploaded file
     fs.unlinkSync(filePath);
 
-    // Return redacted data
-    res.json({ redactedText, mappings, genericFilename });
+    res.json({ redactedText, mappings: matches, genericFilename });
 
   } catch (err) {
     console.error('❌ Detection service error:', err);

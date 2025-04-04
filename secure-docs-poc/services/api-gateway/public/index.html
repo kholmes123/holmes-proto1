@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document Redaction and Watermarking</title>
+</head>
+<body>
+  <h1>📄 Upload DOCX File for PII Redaction</h1>
+
+  <!-- 🔽 User selects file, engine, and process mode -->
+  <form id="redactionForm" enctype="multipart/form-data" >
+    <label for="file">Select DOCX File:</label>
+    <input type="file" name="file" id="file" accept=".docx" required><br><br>
+
+    <!-- Choose PII detection engine -->
+    <label>PII Detection Engine:</label><br>
+    <input type="radio" name="engine" value="regex" checked> Regex (default)<br>
+    <input type="radio" name="engine" value="nlp"> NLP (future feature)<br><br>
+
+    <!-- Choose whether to apply watermark -->
+    <label>Processing Type:</label><br>
+    <input type="radio" name="mode" value="redact" checked> Redact Only<br>
+    <input type="radio" name="mode" value="watermark"> Redact + Watermark<br><br>
+
+    <button type="submit">🚀 Process File</button>
+  </form>
+
+  <div id="responseArea" style="margin-top:20px;"></div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      console.log("🧠 Script loaded and DOM ready");
+  
+      const form = document.getElementById('redactionForm');
+      const responseArea = document.getElementById('responseArea');
+  
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        alert("🚀 Form submitted!");
+  
+        const fileInput = document.getElementById('file');
+        const file = fileInput.files[0];
+        if (!file) return alert('Please select a file.');
+  
+        const engine = document.querySelector('input[name="engine"]:checked').value;
+        const mode = document.querySelector('input[name="mode"]:checked').value;
+  
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('engine', engine);
+  
+        const endpoint = (mode === 'watermark')
+          ? '/process-docx-watermark'
+          : '/process-docx';
+  
+        try {
+          const res = await fetch(endpoint, {
+            method: 'POST',
+            body: formData
+          });
+  
+          if (!res.ok) {
+            const error = await res.json();
+            responseArea.innerHTML = `<p style="color:red;">❌ ${error.error}: ${error.details}</p>`;
+            return;
+          }
+  
+          if (mode === 'redact') {
+            console.log('🧾 Redact-only mode triggered');
+            console.log('🧾 Response status:', res.status);
+            console.log('🧾 Response headers:', [...res.headers.entries()]);
+  
+            const contentType = res.headers.get('Content-Type');
+            if (contentType !== 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+              responseArea.innerHTML = `<p style="color:red;">❌ Unexpected response format: ${contentType}</p>`;
+              return;
+            }
+  
+            const blob = await res.blob();
+            console.log('🧾 Blob size:', blob.size);
+            console.log('🧾 Blob type:', blob.type);
+  
+            const downloadUrl = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = downloadUrl;
+            a.download = file.name.replace('.docx', '_REDACTED.docx');
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+  
+            responseArea.innerHTML = `<p style="color:green;">✅ File redacted and downloaded.</p>`;
+  
+          } else {
+            // Watermark mode — JSON response
+            const data = await res.json();
+  
+            responseArea.innerHTML = `
+              <p style="color:green;">${data.message}</p>
+              <p>${data.watermarkVerified}</p>
+              <p><strong>Original Filename:</strong> ${data.originalFilename}</p>
+              <p><strong>Generic Filename:</strong> ${data.genericFilename}</p>
+              <details style="margin-top: 10px;; color: blue;">
+                <summary>📜 Click to Show Extracted Watermark Text</summary>
+                <pre style="background: #f0f0f0; padding: 10px; border-radius: 5px;">${data.extractedWatermarkText || '⚠️ No watermark text found.'}</pre>
+              </details>
+            `;
+          }
+  
+        } catch (err) {
+          console.error(err);
+          responseArea.innerHTML = `<p style="color:red;">Unexpected error occurred.</p>`;
+        }
+      });
+    });
+  </script>
+
+
+</body>
+</html>

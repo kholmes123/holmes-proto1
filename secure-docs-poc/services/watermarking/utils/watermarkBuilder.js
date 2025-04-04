@@ -3,26 +3,31 @@
 const PiiMapping = require('../../pii-detection/models/PiiMapping');
 
 /**
- * Build watermark content from MongoDB redaction mappings.
- * @param {string} originalFilename - The original file's name used as lookup key.
- * @returns {string} Watermark text to be embedded.
+ * Build watermark text from PiiMapping records
+ * @param {string} originalFilename - Original filename to query
+ * @param {string} username - Name of the user who ran redaction
+ * @param {string} userNote - Any comment the user entered at runtime
+ * @returns {string} - Formatted watermark text
  */
-async function buildWatermarkText(originalFilename) {
-  // Fetch the PII mapping record associated with the original file
+async function buildWatermarkText(originalFilename, username = 'UNKNOWN_USER', userNote = '') {
   const mappingRecord = await PiiMapping.findOne({ originalFilename });
 
   if (!mappingRecord) {
-    throw new Error(`No mapping found for filename: ${originalFilename}`);
+    throw new Error(`No PII mapping found for filename: ${originalFilename}`);
   }
 
   const { piiMappings } = mappingRecord;
 
-  // Header includes the original file name in uppercase, followed by two new lines
   let watermarkText = `${originalFilename.toUpperCase()}\n\n`;
+  watermarkText += `Created by: ${username}\n`;
+  watermarkText += `Created at: ${new Date().toISOString()}\n`;
+  if (userNote) {
+    watermarkText += `Note: ${userNote}\n`;
+  }
+  watermarkText += `\nExtracted PII mappings:\n`;
 
-  // Append each PII match and its replacement to the watermark
-  piiMappings.forEach(({ original, placeholder }) => {
-    watermarkText += `${original} -> ${placeholder}\n`;
+  piiMappings.forEach(({ originalText, placeholder, type }) => {
+    watermarkText += `${originalText} → ${placeholder} [${type}]\n`;
   });
 
   return watermarkText;

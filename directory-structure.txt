@@ -1,0 +1,191 @@
+.
+├── directory-structure.txt
+└── secure-docs-poc
+    ├── public
+    │   └── index.html
+    ├── scratchpad area
+    │   └── text file
+    ├── services
+    │   ├── api-gateway
+    │   │   ├── gatewayService.js
+    │   │   ├── node_modules
+    │   │   ├── package-lock.json
+    │   │   ├── package.json
+    │   │   └── uploads
+    │   ├── file-redaction
+    │   │   ├── docxRedactionService.js
+    │   │   ├── node_modules
+    │   │   ├── package-lock.json
+    │   │   ├── package.json
+    │   │   └── uploads
+    │   ├── node_modules
+    │   │   ├── @mongodb-js
+    │   │   ├── @types
+    │   │   ├── @xmldom
+    │   │   ├── accepts
+    │   │   ├── append-field
+    │   │   ├── argparse
+    │   │   ├── array-flatten
+    │   │   ├── asynckit
+    │   │   ├── axios
+    │   │   ├── base64-js
+    │   │   ├── bluebird
+    │   │   ├── body-parser
+    │   │   ├── bson
+    │   │   ├── buffer-from
+    │   │   ├── busboy
+    │   │   ├── bytes
+    │   │   ├── call-bind-apply-helpers
+    │   │   ├── call-bound
+    │   │   ├── combined-stream
+    │   │   ├── concat-stream
+    │   │   ├── content-disposition
+    │   │   ├── content-type
+    │   │   ├── cookie
+    │   │   ├── cookie-signature
+    │   │   ├── core-util-is
+    │   │   ├── cors
+    │   │   ├── debug
+    │   │   ├── delayed-stream
+    │   │   ├── depd
+    │   │   ├── destroy
+    │   │   ├── dingbat-to-unicode
+    │   │   ├── docx
+    │   │   ├── dotenv
+    │   │   ├── duck
+    │   │   ├── dunder-proto
+    │   │   ├── ee-first
+    │   │   ├── encodeurl
+    │   │   ├── es-define-property
+    │   │   ├── es-errors
+    │   │   ├── es-object-atoms
+    │   │   ├── es-set-tostringtag
+    │   │   ├── escape-html
+    │   │   ├── etag
+    │   │   ├── express
+    │   │   ├── finalhandler
+    │   │   ├── follow-redirects
+    │   │   ├── form-data
+    │   │   ├── forwarded
+    │   │   ├── fresh
+    │   │   ├── function-bind
+    │   │   ├── get-intrinsic
+    │   │   ├── get-proto
+    │   │   ├── gopd
+    │   │   ├── has-symbols
+    │   │   ├── has-tostringtag
+    │   │   ├── hash.js
+    │   │   ├── hasown
+    │   │   ├── http-errors
+    │   │   ├── iconv-lite
+    │   │   ├── immediate
+    │   │   ├── inherits
+    │   │   ├── ipaddr.js
+    │   │   ├── isarray
+    │   │   ├── jszip
+    │   │   ├── kareem
+    │   │   ├── lie
+    │   │   ├── lop
+    │   │   ├── mammoth
+    │   │   ├── math-intrinsics
+    │   │   ├── media-typer
+    │   │   ├── memory-pager
+    │   │   ├── merge-descriptors
+    │   │   ├── methods
+    │   │   ├── mime
+    │   │   ├── mime-db
+    │   │   ├── mime-types
+    │   │   ├── minimalistic-assert
+    │   │   ├── minimist
+    │   │   ├── mkdirp
+    │   │   ├── mongodb
+    │   │   ├── mongodb-connection-string-url
+    │   │   ├── mongoose
+    │   │   ├── mpath
+    │   │   ├── mquery
+    │   │   ├── ms
+    │   │   ├── multer
+    │   │   ├── nanoid
+    │   │   ├── negotiator
+    │   │   ├── object-assign
+    │   │   ├── object-inspect
+    │   │   ├── on-finished
+    │   │   ├── option
+    │   │   ├── pako
+    │   │   ├── parseurl
+    │   │   ├── path-is-absolute
+    │   │   ├── path-to-regexp
+    │   │   ├── process-nextick-args
+    │   │   ├── proxy-addr
+    │   │   ├── proxy-from-env
+    │   │   ├── punycode
+    │   │   ├── qs
+    │   │   ├── range-parser
+    │   │   ├── raw-body
+    │   │   ├── readable-stream
+    │   │   ├── safe-buffer
+    │   │   ├── safer-buffer
+    │   │   ├── sax
+    │   │   ├── send
+    │   │   ├── serve-static
+    │   │   ├── setimmediate
+    │   │   ├── setprototypeof
+    │   │   ├── side-channel
+    │   │   ├── side-channel-list
+    │   │   ├── side-channel-map
+    │   │   ├── side-channel-weakmap
+    │   │   ├── sift
+    │   │   ├── sparse-bitfield
+    │   │   ├── sprintf-js
+    │   │   ├── statuses
+    │   │   ├── streamsearch
+    │   │   ├── string_decoder
+    │   │   ├── toidentifier
+    │   │   ├── tr46
+    │   │   ├── type-is
+    │   │   ├── typedarray
+    │   │   ├── underscore
+    │   │   ├── undici-types
+    │   │   ├── unpipe
+    │   │   ├── util-deprecate
+    │   │   ├── utils-merge
+    │   │   ├── vary
+    │   │   ├── webidl-conversions
+    │   │   ├── whatwg-url
+    │   │   ├── xml
+    │   │   ├── xml-js
+    │   │   ├── xmlbuilder
+    │   │   └── xtend
+    │   ├── package-lock.json
+    │   ├── package.json
+    │   ├── pii-detection
+    │   │   ├── models
+    │   │   ├── piiDetectionService.js
+    │   │   ├── uploads
+    │   │   └── utils
+    │   ├── pii-nlp
+    │   │   └── piiNlpDetectionService.py
+    │   ├── text-extraction
+    │   │   ├── node_modules
+    │   │   ├── package-lock.json
+    │   │   └── package.json
+    │   └── watermarking
+    │       ├── controllers
+    │       ├── node_modules
+    │       ├── package-lock.json
+    │       ├── package.json
+    │       ├── public
+    │       ├── routes
+    │       ├── temp_uploads
+    │       ├── utils
+    │       └── watermarkService.js
+    ├── test data
+    │   ├── Simple PII Test file.docx
+    │   ├── file-1743182777518-4gmh9d.docx
+    │   ├── file-1743387462962-w4l2rh.docx
+    │   ├── file-1743448493848-jdx9cx.docx
+    │   └── watermarked-file-1743448493848-jdx9cx.docx
+    ├── tests
+    └── uploads
+
+166 directories, 23 files
